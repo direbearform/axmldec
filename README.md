@@ -73,6 +73,19 @@ the package name from an APK file using xmllint:
 axmldec com.example.app.apk | xmllint --xpath 'string(/manifest/@package)' -
 ```
 
+### 3.4 Using python binding
+
+Example of using the python binding:
+```python
+from pyaxmldec import AXMLDec
+
+dec = AXMLDec()
+with open("./axmldec_test_data", "rb") as f:
+    data = f.read()
+res = dec.process(data, len(data))
+print(res)
+```
+
 ## 4 Building
 
 1. Install Boost, zlib, and CMake. Make sure you have a latest C++ compiler.

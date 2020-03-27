@@ -43,6 +43,7 @@ include_directories("include")
 #-------------------------------------------------------------------------------
 
 add_executable(axmldec
+    axmldec.cpp
     main.cpp
     include/jitana/util/axml_parser.hpp
     include/jitana/util/stream_reader.hpp
@@ -60,22 +61,11 @@ add_definitions(
 )
 target_link_libraries(axmldec ${Boost_LIBRARIES})
 
-# Zlib.
-find_package(ZLIB REQUIRED)
-include_directories(${ZLIB_INCLUDE_DIR})
-
-# MiniZip.
-add_library(minizip STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/minizip/unzip.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/minizip/ioapi.c
-)
-set_target_properties(minizip PROPERTIES
-    COMPILE_DEFINITIONS "NOUNCRYPT;NOCRYPT")
-target_link_libraries(minizip ${ZLIB_LIBRARIES})
-set(MINIZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/minizip)
-set(MINIZIP_LIBRARIES minizip)
-include_directories(SYSTEM ${MINIZIP_INCLUDE_DIR})
-target_link_libraries(axmldec ${MINIZIP_LIBRARIES})
+#python binding
+find_package(PythonLibs)
+include_directories(${PYTHON_INCLUDE_DIRS})
+add_subdirectory(pybind11)
+pybind11_add_module(pyaxmldec pyaxmldec.cpp axmldec.cpp include/jitana/util/axml_parser.hpp include/jitana/util/stream_reader.hpp lib/jitana/util/axml_parser.cpp)
 
 #-------------------------------------------------------------------------------
 # Install
